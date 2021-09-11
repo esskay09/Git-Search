@@ -2,7 +2,7 @@ package com.terranullius.gitsearch.framework.datasource.network.mappers
 
 import com.terranullius.gitsearch.business.domain.model.Repo
 import com.terranullius.gitsearch.business.domain.util.EntityMapper
-import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.GitSearchAllRepositoryResponse
+import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.GitSearchRepositoryResponse
 import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.License
 import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.RepoDto
 
@@ -48,8 +48,8 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
         )
     }
 
-    fun toRepoList(gitSearchAllRepositoryResponse: GitSearchAllRepositoryResponse) =
-        gitSearchAllRepositoryResponse.repos.map {
+    fun toRepoList(gitSearchRepositoryResponse: GitSearchRepositoryResponse) =
+        gitSearchRepositoryResponse.repos.map {
             mapFromEntity(it)
         }
 
