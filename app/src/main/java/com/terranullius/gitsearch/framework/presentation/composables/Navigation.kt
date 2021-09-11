@@ -32,7 +32,7 @@ fun Navigation(
         }
 
         composable(Screen.ImageDetail.route){
-            ImageDetailScreen(modifier = modifier, viewModel = viewModel)
+            RepoDetailScreen(modifier = modifier, viewModel = viewModel)
         }
 
     }

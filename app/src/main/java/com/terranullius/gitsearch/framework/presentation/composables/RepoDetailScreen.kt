@@ -29,8 +29,10 @@ import kotlin.random.Random
 /**
  * Calculate Screen Height for Supporting all screen sizes
  * */
+
+
 @Composable
-fun ImageDetailScreen(
+fun RepoDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
 ) {
@@ -50,7 +52,7 @@ fun ImageDetailScreen(
             else -> {
                 Scaffold(
                 ) { paddingValues ->
-                    ImageDetailContent(
+                    RepoDetailContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(
@@ -71,7 +73,7 @@ fun ImageDetailScreen(
 }
 
 @Composable
-fun ImageDetailContent(
+fun RepoDetailContent(
     modifier: Modifier = Modifier,
     repo: Repo,
     imageHeight: Dp,
@@ -83,17 +85,17 @@ fun ImageDetailContent(
 
 
     when (LocalConfiguration.current.orientation) {
-        ORIENTATION_LANDSCAPE -> ImageDetailContentLandScape(
+        ORIENTATION_LANDSCAPE -> RepoDetailContentLandScape(
             modifier = modifier,
             repo = repo,
             imageHeight = imageHeight
         )
-        ORIENTATION_PORTRAIT -> ImageDetailContentPotrait(
+        ORIENTATION_PORTRAIT -> RepoDetailContentPotrait(
             modifier = modifier,
             repo = repo,
             imageHeight = imageHeight
         )
-        else -> ImageDetailContentPotrait(
+        else -> RepoDetailContentPotrait(
             modifier = modifier,
             repo = repo,
             imageHeight = imageHeight
@@ -103,7 +105,7 @@ fun ImageDetailContent(
 
 
 @Composable
-private fun ImageDetailContentPotrait(
+private fun RepoDetailContentPotrait(
     modifier: Modifier,
     repo: Repo,
     imageHeight: Dp
@@ -118,12 +120,12 @@ private fun ImageDetailContentPotrait(
         ) {
         }
 
-        ImageDetailDescription(repo)
+        RepoDetailDescription(repo)
     }
 }
 
 @Composable
-fun ImageDetailContentLandScape(
+fun RepoDetailContentLandScape(
     modifier: Modifier = Modifier,
     repo: Repo,
     imageHeight: Dp
@@ -138,7 +140,7 @@ fun ImageDetailContentLandScape(
         ) {
         }
 
-        ImageDetailDescription(
+        RepoDetailDescription(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1f)
@@ -149,7 +151,7 @@ fun ImageDetailContentLandScape(
 }
 
 @Composable
-private fun ImageDetailDescription(repo: Repo, modifier: Modifier = Modifier) {
+private fun RepoDetailDescription(repo: Repo, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         item {
             Spacer(modifier = Modifier.height(12.dp))
@@ -172,13 +174,13 @@ private fun ImageDetailDescription(repo: Repo, modifier: Modifier = Modifier) {
 
         item {
             Column(Modifier.padding(8.dp)) {
-                ImageDescriptionItem(text = repo.description.toString(), icon = Icons.Default.ThumbUp)
+                RepoDescriptionItem(text = repo.description.toString(), icon = Icons.Default.ThumbUp)
                 Spacer(modifier = Modifier.height(12.dp))
-                ImageDescriptionItem(text = repo.watchers.toString(), icon = Icons.Default.Visibility)
+                RepoDescriptionItem(text = repo.watchers.toString(), icon = Icons.Default.Visibility)
                 Spacer(modifier = Modifier.height(12.dp))
-                ImageDescriptionItem(text = repo.stargazers.toString(), icon = Icons.Default.Person)
+                RepoDescriptionItem(text = repo.stargazers.toString(), icon = Icons.Default.Person)
                 Spacer(modifier = Modifier.height(12.dp))
-                ImageDescriptionItem(
+                RepoDescriptionItem(
                     text = Random.nextInt(50, 850).toString(),
                     icon = Icons.Default.Comment
                 )
@@ -189,7 +191,7 @@ private fun ImageDetailDescription(repo: Repo, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ImageDescriptionItem(
+fun RepoDescriptionItem(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector

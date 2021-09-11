@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,13 +21,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import coil.annotation.ExperimentalCoilApi
 import com.terranullius.gitsearch.business.domain.model.Repo
-import com.terranullius.gitsearch.business.domain.state.StateResource
 import com.terranullius.gitsearch.framework.presentation.MainViewModel
-import com.terranullius.gitsearch.framework.presentation.composables.components.ErrorComposable
 import com.terranullius.gitsearch.framework.presentation.composables.components.RepoCard
-import com.terranullius.gitsearch.framework.presentation.composables.components.LoadingComposable
 import com.terranullius.gitsearch.framework.presentation.composables.theme.getTextColor
 import com.terranullius.gitsearch.framework.presentation.composables.theme.spaceBetweenImages
 import com.terranullius.gitsearch.framework.presentation.composables.util.ListType
@@ -68,7 +67,7 @@ fun MainScreen(
                     TextField(
                         value = searchQuery.value,
                         onValueChange = {
-                            searchImage(it, viewModel)
+                            searchRepo(it, viewModel)
                         },
                         leadingIcon = {
                             Icon(
@@ -84,7 +83,7 @@ fun MainScreen(
                                     contentDescription = "Close",
                                     tint = getTextColor(),
                                     modifier = Modifier.clickable {
-                                        viewModel.searchRepos("")
+                                        viewModel.searchRepo("")
                                     }
                                 )
                             } else {
@@ -111,62 +110,54 @@ fun MainScreen(
             )
         }
     ) { paddingValues ->
-        val imageStateFlow = viewModel.repoStateFlow.collectAsState()
+
+
+        val repoPagingItems = viewModel.repoStateFlow.collectAsLazyPagingItems()
+
+
         MainScreenContent(
             modifier = modifier.padding(paddingValues),
-            imageStateFlow,
+            repoPagingItems,
             listType,
             imageHeight
         ) {
-            setImageSelected(it, viewModel)
-            navigateImageDetail(navController)
+            setRepoSelected(it, viewModel)
+            navigateRepoDetail(navController)
         }
     }
 }
 
-fun searchImage(query: String, viewModel: MainViewModel) {
-    viewModel.searchRepos(query = query)
+fun searchRepo(query: String, viewModel: MainViewModel) {
+    viewModel.searchRepo(query = query)
 }
 
-fun navigateImageDetail(navController: NavHostController) {
+fun navigateRepoDetail(navController: NavHostController) {
     navController.navigate(Screen.ImageDetail.route)
 }
 
 @ExperimentalCoroutinesApi
-fun setImageSelected(repo: Repo, viewModel: MainViewModel) {
+fun setRepoSelected(repo: Repo, viewModel: MainViewModel) {
     viewModel.setSelectedRepo(repo)
 }
 
 @Composable
 fun MainScreenContent(
     modifier: Modifier = Modifier,
-    imageStateFlow: State<StateResource<List<Repo>>>,
+    repoPagingItems: LazyPagingItems<Repo>,
     listType: ListType,
     imageHeight: Dp,
     onCardClick: (Repo) -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        when (imageStateFlow.value) {
-            is StateResource.Loading -> {
-                LoadingComposable()
-            }
-            is StateResource.Error -> {
-                val errorMsg = (imageStateFlow.value as StateResource.Error).message
-                ErrorComposable(msg = errorMsg.substringAfter("Reason:"))
-            }
-            is StateResource.Success -> {
-                val repoList = (imageStateFlow.value as StateResource.Success<List<Repo>>).data
 
                 RepoList(
                     modifier = Modifier.fillMaxSize(),
-                    repos = repoList,
+                    repos = repoPagingItems,
                     listType = listType,
                     imageHeight = imageHeight
                 ) {
                     onCardClick(it)
                 }
-            }
-        }
     }
 }
 
@@ -174,7 +165,7 @@ fun MainScreenContent(
 @Composable
 fun RepoList(
     modifier: Modifier = Modifier,
-    repos: List<Repo>,
+    repos: LazyPagingItems<Repo>,
     listType: ListType,
     imageHeight: Dp,
     onCardClick: (Repo) -> Unit,
@@ -182,26 +173,27 @@ fun RepoList(
     LazyColumn(modifier = modifier) {
 
         when (listType) {
-            ListType.LINEAR -> itemsIndexed(repos) { index: Int, item: Repo ->
+            ListType.LINEAR -> itemsIndexed(items = repos, key = null) { index, item ->
 
                 val translationXAnimState = getTranslationXAnim(index)
 
-                RepoItem(
-                    modifier = Modifier
-                        .padding(vertical = spaceBetweenImages)
-                        .graphicsLayer {
-                            translationX = translationXAnimState.value
-                        },
-                    repo = item,
-                    imageHeight = imageHeight
-                ) {
-                    onCardClick(it)
-                }
+                    RepoItem(
+                        modifier = Modifier
+                            .padding(vertical = spaceBetweenImages)
+                            .graphicsLayer {
+                                translationX = translationXAnimState.value
+                            },
+                        repo = item!!,
+                        imageHeight = imageHeight
+                    ) {
+                        onCardClick(it)
+                    }
+
             }
 
             ListType.GRID -> {
 
-                val chunkedList = repos.chunked(2)
+         /*       val chunkedList = repos
 
                 itemsIndexed(chunkedList) { _: Int, chunkedItem: List<Repo> ->
 
@@ -224,7 +216,7 @@ fun RepoList(
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }

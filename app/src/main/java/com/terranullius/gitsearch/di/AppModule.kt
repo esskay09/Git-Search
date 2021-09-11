@@ -9,6 +9,7 @@ import com.terranullius.gitsearch.business.interactors.imagelist.SearchRepos
 import com.terranullius.gitsearch.framework.datasource.network.abstraction.GitNetworkService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.ApiService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.GitNetworkServiceImpl import com.terranullius.gitsearch.framework.datasource.network.mappers.NetworkMapper
+import com.terranullius.gitsearch.framework.presentation.MainRepository
 import com.terranullius.gitsearch.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -78,6 +79,12 @@ object AppModule {
     @Provides
     fun providesMainRepoInteractors(searchRepos: SearchRepos): MainRepoInteractors {
         return MainRepoInteractors(searchRepos)
+    }
+
+    @Singleton
+    @Provides
+    fun providesMainRepository(mainRepoInteractors: MainRepoInteractors): MainRepository {
+        return MainRepository(mainRepoInteractors)
     }
 
 }
