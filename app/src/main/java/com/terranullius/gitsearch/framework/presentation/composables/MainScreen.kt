@@ -150,14 +150,14 @@ fun MainScreenContent(
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
-                RepoList(
-                    modifier = Modifier.fillMaxSize(),
-                    repos = repoPagingItems,
-                    listType = listType,
-                    imageHeight = imageHeight
-                ) {
-                    onCardClick(it)
-                }
+        RepoList(
+            modifier = Modifier.fillMaxSize(),
+            repos = repoPagingItems,
+            listType = listType,
+            imageHeight = imageHeight
+        ) {
+            onCardClick(it)
+        }
     }
 }
 
@@ -177,46 +177,49 @@ fun RepoList(
 
                 val translationXAnimState = getTranslationXAnim(index)
 
-                    RepoItem(
-                        modifier = Modifier
-                            .padding(vertical = spaceBetweenImages)
-                            .graphicsLayer {
-                                translationX = translationXAnimState.value
-                            },
-                        repo = item!!,
-                        imageHeight = imageHeight
-                    ) {
-                        onCardClick(it)
-                    }
+                RepoItem(
+                    modifier = Modifier
+                        .padding(vertical = spaceBetweenImages)
+                        .graphicsLayer {
+                            translationX = translationXAnimState.value
+                        },
+                    repo = item!!,
+                    imageHeight = imageHeight
+                ) {
+                    onCardClick(it)
+                }
 
             }
 
             ListType.GRID -> {
 
-         /*       val chunkedList = repos
-
-                itemsIndexed(chunkedList) { _: Int, chunkedItem: List<Repo> ->
+                itemsIndexed(items = repos, key = null) { index, item ->
 
                     Row(Modifier.fillMaxWidth()) {
-                        chunkedItem.forEachIndexed { index: Int, image: Repo ->
+                        if (index%2!=0){
+                            val chunkedItem = listOf(repos[index], repos[index+1])
+                            chunkedItem.forEachIndexed { i: Int, repo: Repo? ->
 
-                            val translationXAnimState = getTranslationXAnim(index)
+                                val translationXAnimState = getTranslationXAnim(i)
 
-                            RepoItem(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(spaceBetweenImages)
-                                    .graphicsLayer {
-                                        translationX = translationXAnimState.value
-                                    },
-                                repo = image,
-                                imageHeight = imageHeight
-                            ) {
-                                onCardClick(it)
+                                repo?.let {
+                                    RepoItem(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(spaceBetweenImages)
+                                            .graphicsLayer {
+                                                translationX = translationXAnimState.value
+                                            },
+                                        repo = repo,
+                                        imageHeight = imageHeight
+                                    ) {
+                                        onCardClick(it)
+                                    }
+                                }
                             }
                         }
                     }
-                }*/
+                }
             }
         }
     }
