@@ -1,4 +1,4 @@
-package com.terranullius.gitsearch.ui.theme
+package com.terranullius.task.framework.presentation.composables.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

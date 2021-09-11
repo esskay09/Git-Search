@@ -8,8 +8,7 @@ import com.terranullius.gitsearch.business.interactors.imagelist.MainRepoInterac
 import com.terranullius.gitsearch.business.interactors.imagelist.SearchRepos
 import com.terranullius.gitsearch.framework.datasource.network.abstraction.GitNetworkService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.ApiService
-import com.terranullius.gitsearch.framework.datasource.network.implementation.GitNetworkServiceImpl
-import com.terranullius.gitsearch.framework.datasource.network.mappers.NetworkMapper
+import com.terranullius.gitsearch.framework.datasource.network.implementation.GitNetworkServiceImpl import com.terranullius.gitsearch.framework.datasource.network.mappers.NetworkMapper
 import com.terranullius.gitsearch.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides

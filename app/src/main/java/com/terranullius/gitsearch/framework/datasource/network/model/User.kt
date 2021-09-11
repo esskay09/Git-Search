@@ -1,18 +1,37 @@
 package com.terranullius.gitsearch.framework.datasource.network.model
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
 
 data class User(
 
     @Json(name = "id")
-    val id: Int,
+    val idR: Int? = null,
 
     @Json(name = "avatar_url")
-    val avatarUrl: String,
+    val avatarUrlR: String? = null,
 
     @Json(name = "login")
-    val username: String,
+    val usernameR: String? = null,
 
     @Json(name = "repos_url")
-    val reposUrl: String,
-)
+    val reposUrlR: String? = null,
+) {
+
+    val id = idR
+        get() = field ?: 0
+
+
+    val avatarUrl = avatarUrlR
+        get() = field ?: ""
+
+
+    val username = usernameR
+        get() = field ?: ""
+
+
+    val reposUrl = reposUrlR
+        get() = field ?: ""
+
+}

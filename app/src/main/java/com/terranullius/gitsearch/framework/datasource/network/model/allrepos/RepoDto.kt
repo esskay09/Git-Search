@@ -3,41 +3,92 @@ package com.terranullius.gitsearch.framework.datasource.network.model.allrepos
 import com.squareup.moshi.Json
 import com.terranullius.gitsearch.framework.datasource.network.model.User
 
+
 data class RepoDto(
 
     @Json(name = "id")
-    val id: Int,
+    val idR: Int?,
 
     @Json(name = "contributors_url")
-    val contributorsUrl: String,
+    val contributorsUrlR: String?,
 
     @Json(name = "name")
-    val username: String,
+    val usernameR: String?,
 
     @Json(name = "description")
-    val description: String,
+    val descriptionR: String?,
 
     @Json(name = "forks_count")
-    val forks: Int,
+    val forksR: Int?,
 
     @Json(name = "html_url")
-    val repoUrl: String,
+    val repoUrlR: String?,
 
     @Json(name = "language")
-    val language: String,
+    val languageR: String?,
 
     @Json(name = "license")
-    val license: License,
+    val licenseR: License?,
 
     @Json(name = "open_issues_count")
-    val openIssues: Int,
+    val openIssuesR: Int?,
 
     @Json(name = "owner")
-    val owner: User,
+    val ownerR: User?,
 
     @Json(name = "stargazers_count")
-    val stargazers: Int,
+    val stargazersR: Int?,
 
     @Json(name = "watchers_count")
-    val watchers: Int,
-)
+    val watchersR: Int?
+) {
+
+
+    val id = idR
+        get() = field ?: 0
+
+
+    val contributorsUrl = contributorsUrlR
+        get() = field ?: ""
+
+
+    val username = usernameR
+        get() = field ?: ""
+
+
+    val description = descriptionR
+        get() = field ?: ""
+
+
+    val forks = forksR
+        get() = field ?: 0
+
+
+    val repoUrl = repoUrlR
+        get() = field ?: ""
+
+
+    val language = languageR
+        get() = field ?: ""
+
+
+    val license = licenseR
+        get() = field ?: License()
+
+
+    val openIssues = openIssuesR
+        get() = field ?: 0
+
+
+    val owner = ownerR
+        get() = field ?: User()
+
+
+    val stargazers = stargazersR
+        get() = field ?: 0
+
+    val watchers = watchersR
+        get() = field ?: 0
+
+
+}

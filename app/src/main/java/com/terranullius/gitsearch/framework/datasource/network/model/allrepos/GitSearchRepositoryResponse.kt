@@ -1,6 +1,7 @@
 package com.terranullius.gitsearch.framework.datasource.network.model.allrepos
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 data class GitSearchRepositoryResponse(
 
@@ -8,5 +9,11 @@ data class GitSearchRepositoryResponse(
     val repos: List<RepoDto>,
 
     @Json(name = "total_count")
-    val totalCount: Int
-)
+    val totalCountR: Int?
+) {
+
+    val totalCount = totalCountR
+        get() = field ?: 0
+
+}
+

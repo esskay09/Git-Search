@@ -1,4 +1,4 @@
-package com.terranullius.gitsearch.ui.theme
+package com.terranullius.gitsearch.framework.presentation.composables.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
