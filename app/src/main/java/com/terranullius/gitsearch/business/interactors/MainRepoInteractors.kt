@@ -1,4 +1,4 @@
-package com.terranullius.gitsearch.business.interactors.imagelist
+package com.terranullius.gitsearch.business.interactors
 
 import javax.inject.Inject
 

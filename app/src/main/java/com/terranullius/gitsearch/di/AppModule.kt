@@ -4,12 +4,12 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.terranullius.gitsearch.business.data.network.abstraction.GitNetworkDataSource
 import com.terranullius.gitsearch.business.data.network.implementation.GitNetworkDataSourceImpl
-import com.terranullius.gitsearch.business.interactors.imagelist.MainRepoInteractors
-import com.terranullius.gitsearch.business.interactors.imagelist.SearchRepos
+import com.terranullius.gitsearch.business.interactors.MainRepoInteractors
+import com.terranullius.gitsearch.business.interactors.SearchRepos
 import com.terranullius.gitsearch.framework.datasource.network.abstraction.GitNetworkService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.ApiService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.GitNetworkServiceImpl import com.terranullius.gitsearch.framework.datasource.network.mappers.NetworkMapper
-import com.terranullius.gitsearch.framework.presentation.MainRepository
+import com.terranullius.gitsearch.business.interactors.MainRepository
 import com.terranullius.gitsearch.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides

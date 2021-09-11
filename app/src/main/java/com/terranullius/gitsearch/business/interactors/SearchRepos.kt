@@ -1,4 +1,4 @@
-package com.terranullius.gitsearch.business.interactors.imagelist
+package com.terranullius.gitsearch.business.interactors
 
 import com.terranullius.gitsearch.business.data.network.ApiResponseHandler
 import com.terranullius.gitsearch.business.data.network.NetworkErrors
@@ -7,8 +7,6 @@ import com.terranullius.gitsearch.business.data.util.safeApiCall
 import com.terranullius.gitsearch.business.domain.model.Repo
 import com.terranullius.gitsearch.business.domain.state.StateResource
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 /**

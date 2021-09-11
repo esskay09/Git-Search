@@ -1,14 +1,12 @@
 package com.terranullius.gitsearch.framework.presentation
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.terranullius.gitsearch.business.domain.model.Repo
-import com.terranullius.gitsearch.business.domain.state.StateResource
-import com.terranullius.gitsearch.business.interactors.imagelist.MainRepoInteractors
+import com.terranullius.gitsearch.business.interactors.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
