@@ -2,6 +2,10 @@ package com.terranullius.gitsearch.business.data.util
 
 
 import android.util.Log
+import com.terranullius.gitsearch.business.data.cache.CacheConstants.CACHE_TIMEOUT
+import com.terranullius.gitsearch.business.data.cache.CacheErrors.CACHE_ERROR_TIMEOUT
+import com.terranullius.gitsearch.business.data.cache.CacheErrors.CACHE_ERROR_UNKNOWN
+import com.terranullius.gitsearch.business.data.cache.CacheResult
 import com.terranullius.task.business.data.network.ApiResult
 import com.terranullius.gitsearch.business.data.network.NetworkConstants.NETWORK_TIMEOUT
 import com.terranullius.gitsearch.business.data.network.NetworkErrors.NETWORK_ERROR_TIMEOUT
@@ -45,6 +49,30 @@ suspend fun <T> safeApiCall(
                         null,
                         NETWORK_ERROR_UNKNOWN
                     )
+                }
+            }
+        }
+    }
+}
+
+suspend fun <T> safeCacheCall(
+    dispatcher: CoroutineDispatcher,
+    cacheCall: suspend () -> T?
+): CacheResult<T?> {
+    return withContext(dispatcher) {
+        try {
+            // throws TimeoutCancellationException
+            withTimeout(CACHE_TIMEOUT){
+                CacheResult.Success(cacheCall.invoke())
+            }
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+            when (throwable) {
+                is TimeoutCancellationException -> {
+                    CacheResult.GenericError(CACHE_ERROR_TIMEOUT)
+                }
+                else -> {
+                    CacheResult.GenericError(CACHE_ERROR_UNKNOWN)
                 }
             }
         }
