@@ -1,9 +1,10 @@
-package com.terranullius.gitsearch.business.interactors
+package com.terranullius.gitsearch.business.interactors.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.terranullius.gitsearch.business.domain.model.Repo
 import com.terranullius.gitsearch.business.domain.state.StateResource
+import com.terranullius.gitsearch.business.interactors.SearchRepos
 
 class RepoPagingSource(
     val searchRepos: SearchRepos,

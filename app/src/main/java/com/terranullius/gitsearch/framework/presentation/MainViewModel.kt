@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.terranullius.gitsearch.business.domain.model.Repo
-import com.terranullius.gitsearch.business.interactors.MainRepository
+import com.terranullius.gitsearch.business.interactors.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

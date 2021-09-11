@@ -1,5 +1,6 @@
-package com.terranullius.gitsearch.business.interactors
+package com.terranullius.gitsearch.business.interactors.repository
 
+import com.terranullius.gitsearch.business.interactors.MainRepoInteractors
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(

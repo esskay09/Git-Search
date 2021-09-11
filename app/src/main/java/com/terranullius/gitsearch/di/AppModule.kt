@@ -8,13 +8,14 @@ import com.terranullius.gitsearch.business.data.cache.abstraction.RepoCacheDataS
 import com.terranullius.gitsearch.business.data.cache.implementation.RepoCacheDataSourceImpl
 import com.terranullius.gitsearch.business.data.network.abstraction.GitNetworkDataSource
 import com.terranullius.gitsearch.business.data.network.implementation.GitNetworkDataSourceImpl
+import com.terranullius.gitsearch.business.interactors.CacheInteractor
 import com.terranullius.gitsearch.business.interactors.MainRepoInteractors
 import com.terranullius.gitsearch.business.interactors.SearchRepos
 import com.terranullius.gitsearch.framework.datasource.network.abstraction.GitNetworkService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.ApiService
 import com.terranullius.gitsearch.framework.datasource.network.implementation.GitNetworkServiceImpl
 import com.terranullius.gitsearch.framework.datasource.network.mappers.NetworkMapper
-import com.terranullius.gitsearch.business.interactors.MainRepository
+import com.terranullius.gitsearch.business.interactors.repository.MainRepository
 import com.terranullius.gitsearch.framework.datasource.cache.abstraction.RepoDaoService
 import com.terranullius.gitsearch.framework.datasource.cache.database.RepoDao
 import com.terranullius.gitsearch.framework.datasource.cache.database.RepoDatabase
@@ -118,6 +119,16 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun providesCacheInteractor(
+        cacheDataSource: RepoCacheDataSource
+    ): CacheInteractor {
+        return CacheInteractor(
+            cacheDataSource
+        )
+    }
+
+    @Singleton
+    @Provides
     fun providesSearchReposUseCase(gitNetworkDataSource: GitNetworkDataSource): SearchRepos {
         return SearchRepos(
             gitNetworkDataSource
@@ -126,8 +137,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesMainRepoInteractors(searchRepos: SearchRepos): MainRepoInteractors {
-        return MainRepoInteractors(searchRepos)
+    fun providesMainRepoInteractors(
+        searchRepos: SearchRepos,
+        cacheInteractor: CacheInteractor
+    ): MainRepoInteractors {
+        return MainRepoInteractors(
+            searchRepos,
+            cacheInteractor
+        )
     }
 
     @Singleton
