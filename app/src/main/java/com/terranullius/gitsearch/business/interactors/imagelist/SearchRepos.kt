@@ -17,12 +17,10 @@ import javax.inject.Inject
 
 class SearchRepos @Inject constructor(private val gitNetworkDataSource: GitNetworkDataSource) {
 
-    fun searchRepos(
+    suspend fun searchRepos(
         query: String,
         page: Int
-    ): Flow<StateResource<List<Repo>>> = flow {
-
-        emit(StateResource.Loading)
+    ): StateResource<List<Repo>> {
 
         val apiResult = safeApiCall(IO) {
             gitNetworkDataSource.searchRepos(
@@ -41,8 +39,8 @@ class SearchRepos @Inject constructor(private val gitNetworkDataSource: GitNetwo
             }
         }.getResult()
 
-        apiResponse?.let {
-            emit(it)
+        return apiResponse?.let {
+            return@let it
         } ?: StateResource.Error(message = NetworkErrors.NETWORK_ERROR_UNKNOWN)
 
     }
