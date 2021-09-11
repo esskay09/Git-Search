@@ -21,12 +21,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import coil.annotation.ExperimentalCoilApi
 import com.terranullius.gitsearch.business.domain.model.Repo
 import com.terranullius.gitsearch.framework.presentation.MainViewModel
+import com.terranullius.gitsearch.framework.presentation.composables.components.ErrorComposable
+import com.terranullius.gitsearch.framework.presentation.composables.components.LoadingComposable
 import com.terranullius.gitsearch.framework.presentation.composables.components.RepoCard
 import com.terranullius.gitsearch.framework.presentation.composables.theme.getTextColor
 import com.terranullius.gitsearch.framework.presentation.composables.theme.spaceBetweenImages
@@ -150,13 +153,21 @@ fun MainScreenContent(
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
-        RepoList(
-            modifier = Modifier.fillMaxSize(),
-            repos = repoPagingItems,
-            listType = listType,
-            imageHeight = imageHeight
-        ) {
-            onCardClick(it)
+        when (repoPagingItems.loadState.refresh) {
+            is LoadState.Error -> ErrorComposable(){
+                repoPagingItems.refresh()
+            }
+            is LoadState.Loading -> LoadingComposable()
+            else -> {
+                RepoList(
+                    modifier = Modifier.fillMaxSize(),
+                    repos = repoPagingItems,
+                    listType = listType,
+                    imageHeight = imageHeight
+                ) {
+                    onCardClick(it)
+                }
+            }
         }
     }
 }
@@ -170,13 +181,14 @@ fun RepoList(
     imageHeight: Dp,
     onCardClick: (Repo) -> Unit,
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         when (listType) {
             ListType.LINEAR -> itemsIndexed(items = repos, key = null) { index, item ->
-
                 val translationXAnimState = getTranslationXAnim(index)
-
                 RepoItem(
                     modifier = Modifier
                         .padding(vertical = spaceBetweenImages)
@@ -196,8 +208,8 @@ fun RepoList(
                 itemsIndexed(items = repos, key = null) { index, item ->
 
                     Row(Modifier.fillMaxWidth()) {
-                        if (index%2!=0){
-                            val chunkedItem = listOf(repos[index], repos[index+1])
+                        if (index % 2 != 0) {
+                            val chunkedItem = listOf(repos[index], repos[index + 1])
                             chunkedItem.forEachIndexed { i: Int, repo: Repo? ->
 
                                 val translationXAnimState = getTranslationXAnim(i)
@@ -221,6 +233,14 @@ fun RepoList(
                     }
                 }
             }
+        }
+
+        when (repos.loadState.append) {
+            is LoadState.Loading -> item { LoadingComposable() }
+            is LoadState.Error -> item { ErrorComposable(){
+                repos.retry()
+            } }
+            else -> {}
         }
     }
 }

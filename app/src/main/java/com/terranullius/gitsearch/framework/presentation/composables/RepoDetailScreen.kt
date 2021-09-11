@@ -47,7 +47,9 @@ fun RepoDetailScreen(
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         when (selectedRepo.value) {
             null -> {
-                ErrorComposable()
+                ErrorComposable(){
+
+                }
             }
             else -> {
                 Scaffold(
