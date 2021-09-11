@@ -1,14 +1,14 @@
 package com.terranullius.gitsearch.framework.datasource.network.implementation
 
 import com.terranullius.gitsearch.business.domain.model.Repo
-import com.terranullius.gitsearch.framework.datasource.network.abstraction.RepoNetworkService
+import com.terranullius.gitsearch.framework.datasource.network.abstraction.GitNetworkService
 import com.terranullius.gitsearch.framework.datasource.network.mappers.NetworkMapper
 import javax.inject.Inject
 
-class RepoNetworkServiceImpl @Inject constructor(
+class GitNetworkServiceImpl @Inject constructor(
     private val networkMapper: NetworkMapper,
     private val apiService: ApiService
-) : RepoNetworkService {
+) : GitNetworkService {
 
     override suspend fun searchRepos(
         query: String,

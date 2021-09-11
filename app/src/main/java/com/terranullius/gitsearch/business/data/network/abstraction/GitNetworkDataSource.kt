@@ -1,12 +1,14 @@
-package com.terranullius.gitsearch.framework.datasource.network.abstraction
+package com.terranullius.gitsearch.business.data.network.abstraction
 
 import com.terranullius.gitsearch.business.domain.model.Repo
 
 
-interface RepoNetworkService {
+interface GitNetworkDataSource {
+
     suspend fun searchRepos(
         query: String,
         page: Int = 1,
         itemCountPerPage: Int = 20
     ): List<Repo>
+
 }
