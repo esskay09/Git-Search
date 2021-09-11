@@ -4,17 +4,40 @@ import com.squareup.moshi.Json
 import com.terranullius.gitsearch.framework.datasource.network.model.User
 
 data class RepoDto(
+
+    @Json(name = "id")
     val id: Int,
-    val contributors_url: String,
-    val name: String,
+
+    @Json(name = "contributors_url")
+    val contributorsUrl: String,
+
+    @Json(name = "name")
+    val username: String,
+
+    @Json(name = "description")
     val description: String,
-    val forks_count: Int,
-    val html_url: String,
+
+    @Json(name = "forks_count")
+    val forks: Int,
+
+    @Json(name = "html_url")
+    val repoUrl: String,
+
+    @Json(name = "language")
     val language: String,
+
+    @Json(name = "license")
     val license: License,
-    val open_issues_count: Int,
+
+    @Json(name = "open_issues_count")
+    val openIssues: Int,
+
     @Json(name = "owner")
     val owner: User,
-    val stargazers_count: Int,
-    val watchers_count: Int,
+
+    @Json(name = "stargazers_count")
+    val stargazers: Int,
+
+    @Json(name = "watchers_count")
+    val watchers: Int,
 )

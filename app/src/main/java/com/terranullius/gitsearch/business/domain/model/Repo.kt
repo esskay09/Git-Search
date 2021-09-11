@@ -16,6 +16,6 @@ data class Repo(
     val watchers: Int,
     val language: String,
     val stargazers: Int,
-    val name: String,
+    val userName: String,
     val openIssues: Int,
 )

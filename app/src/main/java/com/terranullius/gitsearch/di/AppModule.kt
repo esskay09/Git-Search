@@ -69,9 +69,9 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun proviedsSearchReposUseCase(imageNetworkDataSource: GitNetworkDataSource): SearchRepos {
+    fun providesSearchReposUseCase(gitNetworkDataSource: GitNetworkDataSource): SearchRepos {
         return SearchRepos(
-            imageNetworkDataSource
+            gitNetworkDataSource
         )
     }
 

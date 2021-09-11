@@ -6,5 +6,7 @@ data class GitSearchRepositoryResponse(
 
     @Json(name = "items")
     val repos: List<RepoDto>,
-    val total_count: Int
+
+    @Json(name = "total_count")
+    val totalCount: Int
 )

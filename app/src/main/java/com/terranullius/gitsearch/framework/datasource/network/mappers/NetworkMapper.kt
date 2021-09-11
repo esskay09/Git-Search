@@ -16,17 +16,17 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
 
         return Repo(
             id = entity.id,
-            name = entity.name,
+            userName = entity.username,
             license = entity.license.name,
             description = entity.description,
-            contributorsUrl = entity.contributors_url,
-            forks = entity.forks_count,
-            repoUrl = entity.html_url,
+            contributorsUrl = entity.contributorsUrl,
+            forks = entity.forks,
+            repoUrl = entity.repoUrl,
             owner = entity.owner,
-            watchers = entity.watchers_count,
+            watchers = entity.watchers,
             language = entity.language,
-            stargazers = entity.stargazers_count,
-            openIssues = entity.open_issues_count
+            stargazers = entity.stargazers,
+            openIssues = entity.openIssues
         )
 
     }
@@ -36,15 +36,15 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
             id = domainModel.id,
             license = License(domainModel.license),
             description = domainModel.description,
-            contributors_url = domainModel.contributorsUrl,
-            forks_count = domainModel.forks,
-            html_url = domainModel.repoUrl,
+            contributorsUrl = domainModel.contributorsUrl,
+            forks = domainModel.forks,
+            repoUrl = domainModel.repoUrl,
             owner = domainModel.owner,
-            watchers_count = domainModel.watchers,
-            open_issues_count = domainModel.openIssues,
+            watchers = domainModel.watchers,
+            openIssues = domainModel.openIssues,
             language = domainModel.language,
-            name = domainModel.name,
-            stargazers_count = domainModel.stargazers
+            username = domainModel.userName,
+            stargazers = domainModel.stargazers
         )
     }
 
