@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.terranullius.gitsearch.business.domain.model.Repo
+import com.terranullius.gitsearch.business.domain.state.StateResource
 import com.terranullius.gitsearch.business.interactors.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -30,6 +31,11 @@ class MainViewModel @Inject constructor(
 
     private val _repoStateFlow: MutableStateFlow<PagingData<Repo>> =
         MutableStateFlow(PagingData.empty())
+
+    private val _savedRepoStateFlow: MutableStateFlow<StateResource<List<Repo>>> =
+        MutableStateFlow(StateResource.Loading)
+    val savedRepoStateFlow: StateFlow<StateResource<List<Repo>>>
+        get() = _savedRepoStateFlow
 
     val repoStateFlow: StateFlow<PagingData<Repo>>
         get() = _repoStateFlow
@@ -68,7 +74,7 @@ class MainViewModel @Inject constructor(
         _searchQueryStateFLow.value = query
     }
 
-    fun queryApi(query: String): Flow<PagingData<Repo>> {
+    private fun queryApi(query: String): Flow<PagingData<Repo>> {
         val source = mainRepository.searchRepo(query = query)
 
         val flow = Pager(
@@ -83,5 +89,20 @@ class MainViewModel @Inject constructor(
         return flow
     }
 
+    fun getSavedRepos() {
+        viewModelScope.launch {
+            mainRepository.getSavedRepos().collectLatest {
+                _savedRepoStateFlow.value = it
+            }
+        }
+    }
 
+    fun saveRepos(repoList: List<Repo>) {
+        viewModelScope.launch {
+            mainRepository.deleteAllRepo()
+            repoList.forEach {
+                mainRepository.insertRepo(it)
+            }
+        }
+    }
 }
