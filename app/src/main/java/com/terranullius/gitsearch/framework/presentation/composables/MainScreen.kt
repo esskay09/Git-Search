@@ -137,7 +137,8 @@ fun MainScreen(
             repoPagingItems = repoPagingItems,
             savedRepos = savedRepos,
             listType = listType,
-            imageHeight = imageHeight
+            imageHeight = imageHeight,
+            viewModel = viewModel
         ) {
             setRepoSelected(it, viewModel)
             navigateRepoDetail(navController)
@@ -153,7 +154,7 @@ fun MainScreenContent(
     savedRepos: State<StateResource<List<Repo>>>,
     listType: ListType,
     imageHeight: Dp,
-    viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: MainViewModel,
     onCardClick: (Repo) -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -165,7 +166,8 @@ fun MainScreenContent(
                     repos = null,
                     listType = listType,
                     imageHeight = imageHeight,
-                    savedRepos = savedRepos.value
+                    savedRepos = savedRepos.value,
+                    viewModel = viewModel
                 ) {
                     onCardClick(it)
                 }
@@ -178,6 +180,7 @@ fun MainScreenContent(
                     repos = repoPagingItems,
                     listType = listType,
                     imageHeight = imageHeight,
+                    viewModel = viewModel,
                     savedRepos = emptyList()
                 ) {
                     onCardClick(it)
@@ -194,6 +197,7 @@ fun BoxScope.SavedRepoList(
     savedRepos: StateResource<List<Repo>>,
     listType: ListType,
     imageHeight: Dp,
+    viewModel: MainViewModel,
     onCardClick: (Repo) -> Unit,
 ) {
     when (savedRepos) {
@@ -208,7 +212,8 @@ fun BoxScope.SavedRepoList(
                 repos = null,
                 savedRepos = savedRepos.data,
                 listType = listType,
-                imageHeight = imageHeight
+                imageHeight = imageHeight,
+                viewModel = viewModel
             ) {
                 onCardClick(it)
             }
@@ -224,6 +229,7 @@ fun RepoList(
     savedRepos: List<Repo>,
     listType: ListType,
     imageHeight: Dp,
+    viewModel: MainViewModel,
     onCardClick: (Repo) -> Unit,
 ) {
     LazyColumn(
@@ -238,11 +244,13 @@ fun RepoList(
                         items = lazyItems,
                         key = null
                     ) { index, item ->
+
                         LinearContent(
                             index = index,
                             item = item,
-                            savedItem = savedRepos[index],
+                            savedItem = savedRepos.getOrNull(index),
                             imageHeight = imageHeight,
+                            viewModel = viewModel,
                             onCardClick = onCardClick
                         )
                     }
@@ -252,6 +260,7 @@ fun RepoList(
                         item = null,
                         savedItem = item,
                         imageHeight = imageHeight,
+                        viewModel = viewModel,
                         onCardClick = onCardClick
                     )
                 }
@@ -265,6 +274,7 @@ fun RepoList(
                             repos = repos,
                             savedRepos = savedRepos,
                             imageHeight = imageHeight,
+                            viewModel = viewModel,
                             onCardClick = onCardClick
                         )
                     }
@@ -274,6 +284,7 @@ fun RepoList(
                         repos = null,
                         savedRepos = savedRepos,
                         imageHeight = imageHeight,
+                        viewModel = viewModel,
                         onCardClick = onCardClick
                     )
                 }
@@ -298,9 +309,9 @@ fun RepoList(
 private fun LinearContent(
     index: Int,
     item: Repo?,
-    savedItem: Repo,
+    savedItem: Repo?,
     imageHeight: Dp,
-    viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: MainViewModel,
     onCardClick: (Repo) -> Unit
 ) {
 
@@ -309,6 +320,7 @@ private fun LinearContent(
     }
 
     val translationXAnimState = getTranslationXAnim(index)
+
     RepoItem(
         modifier = Modifier
             .padding(vertical = spaceBetweenImages)
@@ -328,7 +340,7 @@ private fun GridContent(
     repos: LazyPagingItems<Repo>?,
     savedRepos: List<Repo>,
     imageHeight: Dp,
-    viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: MainViewModel,
     onCardClick: (Repo) -> Unit
 ) {
 
@@ -339,8 +351,8 @@ private fun GridContent(
     Row(Modifier.fillMaxWidth()) {
         if (index % 2 != 0) {
             val chunkedItem = listOf(
-                repos?.get(index) ?: savedRepos[index], repos?.get(index + 1)
-                    ?: savedRepos[index + 1]
+                repos?.get(index) ?: savedRepos.getOrNull(index), repos?.get(index + 1)
+                    ?: savedRepos.getOrNull(index + 1)
             )
             chunkedItem.forEachIndexed { i: Int, repo: Repo? ->
                 val translationXAnimState = getTranslationXAnim(i)
@@ -391,31 +403,35 @@ fun getTranslationXAnim(index: Int): State<Float> {
 @Composable
 private fun RepoItem(
     modifier: Modifier = Modifier,
-    repo: Repo,
+    repo: Repo?,
     imageHeight: Dp,
     onCardClick: (Repo) -> Unit
 ) {
-    Column(
-        modifier = modifier
-    ) {
-        RepoCard(
-            repo = repo,
-            modifier = Modifier.height(imageHeight),
-            onClick = {
-                onCardClick(it)
+
+    repo?.let {
+        Column(
+            modifier = modifier
+        ) {
+            RepoCard(
+                repo = repo,
+                modifier = Modifier.height(imageHeight),
+                onClick = {
+                    onCardClick(it)
+                }
+            ) { repo ->
+                Text(
+                    text = repo.userName.take(15),
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.h6,
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .offset(x = 8.dp, y = (-8).dp)
+                )
             }
-        ) { repo ->
-            Text(
-                text = repo.userName.take(15),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                style = MaterialTheme.typography.h6,
-                color = Color.Gray,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .offset(x = 8.dp, y = (-8).dp)
-            )
+            Spacer(modifier = Modifier.height(spaceBetweenImages))
         }
-        Spacer(modifier = Modifier.height(spaceBetweenImages))
     }
+
 }
