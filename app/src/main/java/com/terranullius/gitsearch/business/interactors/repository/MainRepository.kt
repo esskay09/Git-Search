@@ -27,4 +27,5 @@ class MainRepository @Inject constructor(
     suspend fun deleteAllRepo(){
         mainRepoInteractors.cacheInteractor.deleteAllRepo()
     }
+
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.*
 import com.terranullius.gitsearch.business.domain.model.Repo
 import com.terranullius.gitsearch.business.domain.state.StateResource
@@ -64,6 +65,8 @@ class MainViewModel @Inject constructor(
                     _repoStateFlow.value = it
                 }
         }
+
+        getSavedRepos()
     }
 
     fun setSelectedRepo(repo: Repo) {
@@ -76,11 +79,8 @@ class MainViewModel @Inject constructor(
 
     private fun queryApi(query: String): Flow<PagingData<Repo>> {
         val source = mainRepository.searchRepo(query = query)
-
         val flow = Pager(
-            PagingConfig(
-                pageSize = 20
-            )
+            PagingConfig(pageSize = 20)
         ) {
             source
         }.flow
@@ -103,6 +103,20 @@ class MainViewModel @Inject constructor(
             repoList.forEach {
                 mainRepository.insertRepo(it)
             }
+        }
+    }
+
+    fun saveRepo(repo: Repo?) {
+        viewModelScope.launch {
+            repo?.let {
+                mainRepository.insertRepo(repo)
+            }
+        }
+    }
+
+    fun deleteAllRepo(){
+        viewModelScope.launch {
+            mainRepository.deleteAllRepo()
         }
     }
 }

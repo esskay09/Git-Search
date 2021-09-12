@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -27,6 +28,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import coil.annotation.ExperimentalCoilApi
 import com.terranullius.gitsearch.business.domain.model.Repo
+import com.terranullius.gitsearch.business.domain.state.StateResource
 import com.terranullius.gitsearch.framework.presentation.MainViewModel
 import com.terranullius.gitsearch.framework.presentation.composables.components.ErrorComposable
 import com.terranullius.gitsearch.framework.presentation.composables.components.LoadingComposable
@@ -59,6 +61,19 @@ fun MainScreen(
 
     var listType by rememberSaveable {
         mutableStateOf(ListType.LINEAR)
+    }
+
+    fun searchRepo(query: String, viewModel: MainViewModel) {
+        viewModel.searchRepo(query = query)
+    }
+
+    fun navigateRepoDetail(navController: NavHostController) {
+        navController.navigate(Screen.ImageDetail.route)
+    }
+
+    @ExperimentalCoroutinesApi
+    fun setRepoSelected(repo: Repo, viewModel: MainViewModel) {
+        viewModel.setSelectedRepo(repo)
     }
 
     val searchQuery = viewModel.searchQueryStateFLow.collectAsState()
@@ -114,15 +129,15 @@ fun MainScreen(
         }
     ) { paddingValues ->
 
-
         val repoPagingItems = viewModel.repoStateFlow.collectAsLazyPagingItems()
-
+        val savedRepos = viewModel.savedRepoStateFlow.collectAsState()
 
         MainScreenContent(
             modifier = modifier.padding(paddingValues),
-            repoPagingItems,
-            listType,
-            imageHeight
+            repoPagingItems = repoPagingItems,
+            savedRepos = savedRepos,
+            listType = listType,
+            imageHeight = imageHeight
         ) {
             setRepoSelected(it, viewModel)
             navigateRepoDetail(navController)
@@ -130,43 +145,72 @@ fun MainScreen(
     }
 }
 
-fun searchRepo(query: String, viewModel: MainViewModel) {
-    viewModel.searchRepo(query = query)
-}
-
-fun navigateRepoDetail(navController: NavHostController) {
-    navController.navigate(Screen.ImageDetail.route)
-}
-
-@ExperimentalCoroutinesApi
-fun setRepoSelected(repo: Repo, viewModel: MainViewModel) {
-    viewModel.setSelectedRepo(repo)
-}
 
 @Composable
 fun MainScreenContent(
     modifier: Modifier = Modifier,
     repoPagingItems: LazyPagingItems<Repo>,
+    savedRepos: State<StateResource<List<Repo>>>,
     listType: ListType,
     imageHeight: Dp,
+    viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onCardClick: (Repo) -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
         when (repoPagingItems.loadState.refresh) {
-            is LoadState.Error -> ErrorComposable(){
-                repoPagingItems.refresh()
+            is LoadState.Error -> {
+                SavedRepoList(
+                    modifier = Modifier.fillMaxSize(),
+                    repos = null,
+                    listType = listType,
+                    imageHeight = imageHeight,
+                    savedRepos = savedRepos.value
+                ) {
+                    onCardClick(it)
+                }
             }
             is LoadState.Loading -> LoadingComposable()
             else -> {
+                viewModel.deleteAllRepo()
                 RepoList(
                     modifier = Modifier.fillMaxSize(),
                     repos = repoPagingItems,
                     listType = listType,
-                    imageHeight = imageHeight
+                    imageHeight = imageHeight,
+                    savedRepos = emptyList()
                 ) {
                     onCardClick(it)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun BoxScope.SavedRepoList(
+    modifier: Modifier = Modifier,
+    repos: LazyPagingItems<Repo>?,
+    savedRepos: StateResource<List<Repo>>,
+    listType: ListType,
+    imageHeight: Dp,
+    onCardClick: (Repo) -> Unit,
+) {
+    when (savedRepos) {
+        is StateResource.Loading -> LoadingComposable()
+        is StateResource.Error -> {
+            ErrorComposable() {
+                repos?.refresh()
+            }
+        }
+        is StateResource.Success -> {
+            RepoList(
+                repos = null,
+                savedRepos = savedRepos.data,
+                listType = listType,
+                imageHeight = imageHeight
+            ) {
+                onCardClick(it)
             }
         }
     }
@@ -176,7 +220,8 @@ fun MainScreenContent(
 @Composable
 fun RepoList(
     modifier: Modifier = Modifier,
-    repos: LazyPagingItems<Repo>,
+    repos: LazyPagingItems<Repo>?,
+    savedRepos: List<Repo>,
     listType: ListType,
     imageHeight: Dp,
     onCardClick: (Repo) -> Unit,
@@ -187,60 +232,133 @@ fun RepoList(
     ) {
 
         when (listType) {
-            ListType.LINEAR -> itemsIndexed(items = repos, key = null) { index, item ->
-                val translationXAnimState = getTranslationXAnim(index)
-                RepoItem(
-                    modifier = Modifier
-                        .padding(vertical = spaceBetweenImages)
-                        .graphicsLayer {
-                            translationX = translationXAnimState.value
-                        },
-                    repo = item!!,
-                    imageHeight = imageHeight
-                ) {
-                    onCardClick(it)
+            ListType.LINEAR -> {
+                repos?.let { lazyItems ->
+                    itemsIndexed(
+                        items = lazyItems,
+                        key = null
+                    ) { index, item ->
+                        LinearContent(
+                            index = index,
+                            item = item,
+                            savedItem = savedRepos[index],
+                            imageHeight = imageHeight,
+                            onCardClick = onCardClick
+                        )
+                    }
+                } ?: itemsIndexed(savedRepos) { index, item ->
+                    LinearContent(
+                        index = index,
+                        item = null,
+                        savedItem = item,
+                        imageHeight = imageHeight,
+                        onCardClick = onCardClick
+                    )
                 }
-
             }
 
             ListType.GRID -> {
-
-                itemsIndexed(items = repos, key = null) { index, item ->
-
-                    Row(Modifier.fillMaxWidth()) {
-                        if (index % 2 != 0) {
-                            val chunkedItem = listOf(repos[index], repos[index + 1])
-                            chunkedItem.forEachIndexed { i: Int, repo: Repo? ->
-
-                                val translationXAnimState = getTranslationXAnim(i)
-
-                                repo?.let {
-                                    RepoItem(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(spaceBetweenImages)
-                                            .graphicsLayer {
-                                                translationX = translationXAnimState.value
-                                            },
-                                        repo = repo,
-                                        imageHeight = imageHeight
-                                    ) {
-                                        onCardClick(it)
-                                    }
-                                }
-                            }
-                        }
+                repos?.let { lazyItems ->
+                    itemsIndexed(items = lazyItems, key = null) { index, item ->
+                        GridContent(
+                            index = index,
+                            repos = repos,
+                            savedRepos = savedRepos,
+                            imageHeight = imageHeight,
+                            onCardClick = onCardClick
+                        )
                     }
+                } ?: itemsIndexed(savedRepos) { index, item ->
+                    GridContent(
+                        index = index,
+                        repos = null,
+                        savedRepos = savedRepos,
+                        imageHeight = imageHeight,
+                        onCardClick = onCardClick
+                    )
                 }
+
             }
         }
 
-        when (repos.loadState.append) {
+        when (repos?.loadState?.append) {
             is LoadState.Loading -> item { LoadingComposable() }
-            is LoadState.Error -> item { ErrorComposable(){
-                repos.retry()
-            } }
-            else -> {}
+            is LoadState.Error -> item {
+                ErrorComposable() {
+                    repos.retry()
+                }
+            }
+            else -> {
+            }
+        }
+    }
+}
+
+@Composable
+private fun LinearContent(
+    index: Int,
+    item: Repo?,
+    savedItem: Repo,
+    imageHeight: Dp,
+    viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onCardClick: (Repo) -> Unit
+) {
+
+    LaunchedEffect(key1 = index) {
+        viewModel.saveRepo(item)
+    }
+
+    val translationXAnimState = getTranslationXAnim(index)
+    RepoItem(
+        modifier = Modifier
+            .padding(vertical = spaceBetweenImages)
+            .graphicsLayer {
+                translationX = translationXAnimState.value
+            },
+        repo = item ?: savedItem,
+        imageHeight = imageHeight
+    ) {
+        onCardClick(it)
+    }
+}
+
+@Composable
+private fun GridContent(
+    index: Int,
+    repos: LazyPagingItems<Repo>?,
+    savedRepos: List<Repo>,
+    imageHeight: Dp,
+    viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onCardClick: (Repo) -> Unit
+) {
+
+    LaunchedEffect(key1 = index) {
+        viewModel.saveRepo(repos?.get(index))
+    }
+
+    Row(Modifier.fillMaxWidth()) {
+        if (index % 2 != 0) {
+            val chunkedItem = listOf(
+                repos?.get(index) ?: savedRepos[index], repos?.get(index + 1)
+                    ?: savedRepos[index + 1]
+            )
+            chunkedItem.forEachIndexed { i: Int, repo: Repo? ->
+                val translationXAnimState = getTranslationXAnim(i)
+                repo?.let {
+                    RepoItem(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(spaceBetweenImages)
+                            .graphicsLayer {
+                                translationX = translationXAnimState.value
+                            },
+                        repo = repo,
+                        imageHeight = imageHeight
+                    ) {
+                        onCardClick(it)
+                    }
+                }
+            }
         }
     }
 }
