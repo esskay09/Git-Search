@@ -2,7 +2,7 @@ package com.terranullius.gitsearch.framework.datasource.cache.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.terranullius.gitsearch.framework.datasource.network.model.User
+
 
 @Entity(tableName = "saved_repos")
 data class RepoCacheEntity(
@@ -19,7 +19,8 @@ data class RepoCacheEntity(
     val watchers: Int,
     val language: String,
     val stargazers: Int,
-    val userName: String,
+    val name: String,
+    val fullName: String,
     val openIssues: Int,
 )
 

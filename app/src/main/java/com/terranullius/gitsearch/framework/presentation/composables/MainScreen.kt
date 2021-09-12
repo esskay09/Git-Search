@@ -420,7 +420,7 @@ private fun RepoItem(
                 }
             ) { repo ->
                 Text(
-                    text = repo.userName.take(15),
+                    text = repo.name.take(15),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = MaterialTheme.typography.h6,

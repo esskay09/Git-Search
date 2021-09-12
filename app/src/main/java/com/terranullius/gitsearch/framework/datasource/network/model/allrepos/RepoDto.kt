@@ -1,7 +1,7 @@
 package com.terranullius.gitsearch.framework.datasource.network.model.allrepos
 
 import com.squareup.moshi.Json
-import com.terranullius.gitsearch.framework.datasource.network.model.User
+import com.terranullius.gitsearch.framework.datasource.network.model.UserDto
 
 
 data class RepoDto(
@@ -13,7 +13,10 @@ data class RepoDto(
     val contributorsUrlR: String?,
 
     @Json(name = "name")
-    val usernameR: String?,
+    val nameR: String?,
+
+    @Json(name = "full_name")
+    val fullNameR: String?,
 
     @Json(name = "description")
     val descriptionR: String?,
@@ -34,7 +37,7 @@ data class RepoDto(
     val openIssuesR: Int?,
 
     @Json(name = "owner")
-    val ownerR: User?,
+    val ownerR: UserDto?,
 
     @Json(name = "stargazers_count")
     val stargazersR: Int?,
@@ -52,7 +55,10 @@ data class RepoDto(
         get() = field ?: ""
 
 
-    val username = usernameR
+    val name = nameR
+        get() = field ?: ""
+
+    val fullName = fullNameR
         get() = field ?: ""
 
 
@@ -81,7 +87,7 @@ data class RepoDto(
 
 
     val owner = ownerR
-        get() = field ?: User()
+        get() = field ?: UserDto()
 
 
     val stargazers = stargazersR

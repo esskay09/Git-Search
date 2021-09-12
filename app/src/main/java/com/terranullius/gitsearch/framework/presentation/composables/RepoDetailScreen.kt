@@ -15,13 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.terranullius.gitsearch.R
 import com.terranullius.gitsearch.business.domain.model.Repo
@@ -31,7 +29,6 @@ import com.terranullius.gitsearch.framework.presentation.composables.theme.getTe
 import com.terranullius.gitsearch.framework.presentation.composables.components.ErrorComposable
 import com.terranullius.gitsearch.framework.presentation.composables.components.RepoCard
 import com.terranullius.gitsearch.framework.presentation.util.Screen
-import kotlin.random.Random
 
 
 /**
@@ -184,7 +181,7 @@ private fun RepoDetailDescription(
         item {
             Row {
                 Text(
-                    text = repo.userName,
+                    text = repo.name,
                     style = MaterialTheme.typography.h5.copy(
                         fontWeight = FontWeight.Bold,
                         color = getHeadlineTextColor()

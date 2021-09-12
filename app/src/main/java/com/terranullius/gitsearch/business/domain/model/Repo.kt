@@ -1,7 +1,5 @@
 package com.terranullius.gitsearch.business.domain.model
 
-import com.terranullius.gitsearch.framework.datasource.network.model.User
-
 /**
  * Domain model
  * */
@@ -16,6 +14,7 @@ data class Repo(
     val watchers: Int,
     val language: String,
     val stargazers: Int,
-    val userName: String,
+    val name: String,
+    val fullName: String,
     val openIssues: Int,
 )

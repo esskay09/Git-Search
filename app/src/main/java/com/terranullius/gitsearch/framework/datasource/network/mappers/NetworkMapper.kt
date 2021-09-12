@@ -18,13 +18,14 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
 
         return Repo(
             id = entity.id!!,
-            userName = entity.username!!,
+            name = entity.name!!,
+            fullName = entity.fullName!!,
             license = entity.license?.name!!,
             description = entity.description!!,
             contributorsUrl = entity.contributorsUrl!!,
             forks = entity.forks!!,
             repoUrl = entity.repoUrl!!,
-            owner = entity.owner!!,
+            owner = entity.owner?.toUser()!!,
             watchers = entity.watchers!!,
             language = entity.language!!,
             stargazers = entity.stargazers!!,
@@ -41,11 +42,12 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
             contributorsUrlR = domainModel.contributorsUrl,
             forksR = domainModel.forks,
             repoUrlR = domainModel.repoUrl,
-            ownerR = domainModel.owner,
+            ownerR = domainModel.owner.toUserDto(),
             watchersR = domainModel.watchers,
             openIssuesR = domainModel.openIssues,
             languageR = domainModel.language,
-            usernameR = domainModel.userName,
+            nameR = domainModel.name,
+            fullNameR = domainModel.fullName,
             stargazersR = domainModel.stargazers
         )
     }
@@ -61,5 +63,12 @@ fun UserDto.toUser() = User(
     avatarUrl = this.avatarUrl!!,
     username = this.username!!,
     reposUrl = this.reposUrl!!
+)
+
+fun User.toUserDto() = UserDto(
+    idR = this.id,
+    avatarUrlR = this.avatarUrl,
+    usernameR = this.username,
+    reposUrlR = this.reposUrl
 )
 

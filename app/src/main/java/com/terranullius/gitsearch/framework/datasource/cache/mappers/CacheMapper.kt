@@ -1,9 +1,10 @@
 package com.terranullius.gitsearch.framework.datasource.cache.mappers
 
 import com.terranullius.gitsearch.business.domain.model.Repo
+import com.terranullius.gitsearch.business.domain.model.User
 import com.terranullius.gitsearch.business.domain.util.EntityMapper
 import com.terranullius.gitsearch.framework.datasource.cache.model.RepoCacheEntity
-import com.terranullius.gitsearch.framework.datasource.network.model.User
+import kotlin.random.Random
 
 class CacheMapper : EntityMapper<RepoCacheEntity, Repo> {
 
@@ -16,13 +17,16 @@ class CacheMapper : EntityMapper<RepoCacheEntity, Repo> {
             forks = entity.forks,
             repoUrl = entity.repoUrl,
             owner = User(
-                avatarUrlR = entity.ownerAvatarUrl,
-                usernameR = entity.ownerUserName
+                avatarUrl = entity.ownerAvatarUrl,
+                username = entity.ownerUserName,
+                id = Random.nextInt(),
+                reposUrl = ""
             ),
             watchers = entity.watchers,
             language = entity.language,
             stargazers = entity.stargazers,
-            userName = entity.userName,
+            name = entity.name,
+            fullName = entity.fullName,
             openIssues = entity.openIssues
         )
     }
@@ -38,10 +42,11 @@ class CacheMapper : EntityMapper<RepoCacheEntity, Repo> {
             watchers = domainModel.watchers,
             language = domainModel.language,
             stargazers = domainModel.stargazers,
-            userName = domainModel.userName,
+            name = domainModel.name,
+            fullName = domainModel.fullName,
             openIssues = domainModel.openIssues,
-            ownerAvatarUrl = domainModel.owner.avatarUrl!!,
-            ownerUserName = domainModel.owner.username!!
+            ownerAvatarUrl = domainModel.owner.avatarUrl,
+            ownerUserName = domainModel.owner.username
         )
     }
 
