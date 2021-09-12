@@ -1,5 +1,6 @@
 package com.terranullius.gitsearch.framework.presentation
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,7 @@ class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
+
     private val _searchQueryStateFLow: MutableStateFlow<String> = MutableStateFlow("compose")
     val searchQueryStateFLow: StateFlow<String>
         get() = _searchQueryStateFLow
@@ -41,10 +43,13 @@ class MainViewModel @Inject constructor(
     val repoStateFlow: StateFlow<PagingData<Repo>>
         get() = _repoStateFlow
 
-
     private val _selectedRepo = mutableStateOf<Repo?>(null)
     val selectedRepo: State<Repo?>
         get() = _selectedRepo
+
+    private val _selectedUrl = mutableStateOf<String>("")
+    val selectedUrl: State<String>
+        get() = _selectedUrl
 
     init {
 
@@ -71,6 +76,10 @@ class MainViewModel @Inject constructor(
 
     fun setSelectedRepo(repo: Repo) {
         _selectedRepo.value = repo
+    }
+
+    fun setSelectedUrl(url: String){
+        _selectedUrl.value = url
     }
 
     fun searchRepo(query: String) {
@@ -114,7 +123,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun deleteAllRepo(){
+    fun deleteAllRepo() {
         viewModelScope.launch {
             mainRepository.deleteAllRepo()
         }
