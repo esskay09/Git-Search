@@ -226,12 +226,6 @@ private fun RepoDetailDescription(
     }
 }
 
-fun navWebScreen(
-    navController: NavHostController
-) {
-    navController.navigate(Screen.Web.route)
-}
-
 @Composable
 fun ColumnScope.RepoDescriptionItem(
     modifier: Modifier = Modifier,
@@ -244,4 +238,10 @@ fun ColumnScope.RepoDescriptionItem(
         Text(text = text, color = getTextColor())
     }
     Spacer(modifier = Modifier.height(12.dp))
+}
+
+fun navWebScreen(
+    navController: NavHostController
+) {
+    navController.navigate(Screen.Web.route)
 }

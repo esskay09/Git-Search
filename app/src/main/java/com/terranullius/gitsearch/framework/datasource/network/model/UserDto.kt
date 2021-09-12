@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 
-data class User(
+data class UserDto(
 
     @Json(name = "id")
     val idR: Int? = null,

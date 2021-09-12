@@ -1,7 +1,9 @@
 package com.terranullius.gitsearch.framework.datasource.network.mappers
 
 import com.terranullius.gitsearch.business.domain.model.Repo
+import com.terranullius.gitsearch.business.domain.model.User
 import com.terranullius.gitsearch.business.domain.util.EntityMapper
+import com.terranullius.gitsearch.framework.datasource.network.model.UserDto
 import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.GitSearchRepositoryResponse
 import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.License
 import com.terranullius.gitsearch.framework.datasource.network.model.allrepos.RepoDto
@@ -43,7 +45,7 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
             watchersR = domainModel.watchers,
             openIssuesR = domainModel.openIssues,
             languageR = domainModel.language,
-            usernameR= domainModel.userName,
+            usernameR = domainModel.userName,
             stargazersR = domainModel.stargazers
         )
     }
@@ -52,6 +54,12 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
         gitSearchRepositoryResponse.repos.map {
             mapFromEntity(it)
         }
-
 }
+
+fun UserDto.toUser() = User(
+    id = this.idR!!,
+    avatarUrl = this.avatarUrl!!,
+    username = this.username!!,
+    reposUrl = this.reposUrl!!
+)
 
