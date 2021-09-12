@@ -6,7 +6,7 @@ import com.terranullius.gitsearch.framework.datasource.cache.model.RepoCacheEnti
 @Dao
 interface RepoDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRepo(repo: RepoCacheEntity): Long
 
     @Query("DELETE FROM saved_repos WHERE id < -1")

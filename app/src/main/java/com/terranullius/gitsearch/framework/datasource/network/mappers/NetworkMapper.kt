@@ -17,7 +17,7 @@ class NetworkMapper : EntityMapper<RepoDto, Repo> {
     override fun mapFromEntity(entity: RepoDto): Repo {
 
         return Repo(
-            id = entity.id!!,
+            id = entity.id!!.mod(10000),
             name = entity.name!!,
             fullName = entity.fullName!!,
             license = entity.license?.name!!,

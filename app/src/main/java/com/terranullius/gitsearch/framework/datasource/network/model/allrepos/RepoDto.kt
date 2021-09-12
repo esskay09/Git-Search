@@ -2,6 +2,7 @@ package com.terranullius.gitsearch.framework.datasource.network.model.allrepos
 
 import com.squareup.moshi.Json
 import com.terranullius.gitsearch.framework.datasource.network.model.UserDto
+import java.util.*
 
 
 data class RepoDto(
@@ -48,7 +49,7 @@ data class RepoDto(
 
 
     val id = idR
-        get() = field ?: 0
+        get() = field ?: Random().nextInt(10000)
 
 
     val contributorsUrl = contributorsUrlR

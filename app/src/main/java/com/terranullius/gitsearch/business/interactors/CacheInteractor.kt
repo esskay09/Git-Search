@@ -1,5 +1,6 @@
 package com.terranullius.gitsearch.business.interactors
 
+import android.util.Log
 import com.terranullius.gitsearch.business.data.cache.CacheErrors
 import com.terranullius.gitsearch.business.data.cache.CacheResponseHandler
 import com.terranullius.gitsearch.business.data.cache.abstraction.RepoCacheDataSource
@@ -40,7 +41,6 @@ class CacheInteractor @Inject constructor(
         }
 
         val result = object : CacheResponseHandler<Int>(cacheResult) {
-
             override suspend fun handleSuccess(resultObj: Int) = StateResource.Success(resultObj)
         }.getResult()
 
@@ -49,11 +49,9 @@ class CacheInteractor @Inject constructor(
 
     suspend fun getSavedRepos() = flow {
         emit(StateResource.Loading)
-
         val cacheResult = safeCacheCall(Dispatchers.IO) {
             cacheDataSource.getRepos()
         }
-
         val result = object : CacheResponseHandler<List<Repo>>(cacheResult) {
             override suspend fun handleSuccess(resultObj: List<Repo>) =
                 StateResource.Success(resultObj)

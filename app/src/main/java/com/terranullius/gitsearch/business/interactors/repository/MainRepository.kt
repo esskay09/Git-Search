@@ -1,10 +1,12 @@
 package com.terranullius.gitsearch.business.interactors.repository
 
+import android.util.Log
 import com.terranullius.gitsearch.business.domain.model.Repo
 import com.terranullius.gitsearch.business.domain.model.User
 import com.terranullius.gitsearch.business.domain.state.StateResource
 import com.terranullius.gitsearch.business.interactors.MainRepoInteractors
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "saved_repos")
 data class RepoCacheEntity(
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val id: Int = 0,
     val license: String,
     val contributorsUrl: String,

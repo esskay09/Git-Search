@@ -1,6 +1,7 @@
 package com.terranullius.gitsearch.framework.presentation.composables
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -174,7 +175,7 @@ fun MainScreenContent(
             }
             is LoadState.Loading -> LoadingComposable()
             else -> {
-                viewModel.deleteAllRepo()
+//                viewModel.deleteAllRepo()
                 RepoList(
                     modifier = Modifier.fillMaxSize(),
                     repos = repoPagingItems,
