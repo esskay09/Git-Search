@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.*
 import com.terranullius.gitsearch.business.domain.model.Repo
+import com.terranullius.gitsearch.business.domain.model.User
 import com.terranullius.gitsearch.business.domain.state.StateResource
 import com.terranullius.gitsearch.business.interactors.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -127,5 +128,11 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             mainRepository.deleteAllRepo()
         }
+    }
+
+    fun getContributors(
+        repoName: String
+    ): Flow<StateResource<List<User>>> {
+        return mainRepository.getContributors(repoName)
     }
 }

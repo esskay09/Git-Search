@@ -1,6 +1,7 @@
 package com.terranullius.gitsearch.business.interactors.repository
 
 import com.terranullius.gitsearch.business.domain.model.Repo
+import com.terranullius.gitsearch.business.domain.model.User
 import com.terranullius.gitsearch.business.domain.state.StateResource
 import com.terranullius.gitsearch.business.interactors.MainRepoInteractors
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,10 @@ class MainRepository @Inject constructor(
 
     suspend fun deleteAllRepo(){
         mainRepoInteractors.cacheInteractor.deleteAllRepo()
+    }
+
+    fun getContributors(repoName: String): Flow<StateResource<List<User>>> {
+        return mainRepoInteractors.getContributors.getContributors(repoName)
     }
 
 }

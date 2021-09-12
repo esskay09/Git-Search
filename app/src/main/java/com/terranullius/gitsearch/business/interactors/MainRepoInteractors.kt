@@ -5,5 +5,6 @@ import javax.inject.Inject
 // Use cases
 data class MainRepoInteractors @Inject constructor(
     val searchRepos: SearchRepos,
-    val cacheInteractor: CacheInteractor
+    val cacheInteractor: CacheInteractor,
+    val getContributors: GetContributors
 )

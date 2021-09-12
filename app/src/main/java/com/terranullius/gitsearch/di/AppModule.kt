@@ -9,6 +9,7 @@ import com.terranullius.gitsearch.business.data.cache.implementation.RepoCacheDa
 import com.terranullius.gitsearch.business.data.network.abstraction.GitNetworkDataSource
 import com.terranullius.gitsearch.business.data.network.implementation.GitNetworkDataSourceImpl
 import com.terranullius.gitsearch.business.interactors.CacheInteractor
+import com.terranullius.gitsearch.business.interactors.GetContributors
 import com.terranullius.gitsearch.business.interactors.MainRepoInteractors
 import com.terranullius.gitsearch.business.interactors.SearchRepos
 import com.terranullius.gitsearch.framework.datasource.network.abstraction.GitNetworkService
@@ -139,11 +140,13 @@ object AppModule {
     @Provides
     fun providesMainRepoInteractors(
         searchRepos: SearchRepos,
-        cacheInteractor: CacheInteractor
+        cacheInteractor: CacheInteractor,
+        getContributors: GetContributors
     ): MainRepoInteractors {
         return MainRepoInteractors(
             searchRepos,
-            cacheInteractor
+            cacheInteractor,
+            getContributors
         )
     }
 
@@ -153,4 +156,13 @@ object AppModule {
         return MainRepository(mainRepoInteractors)
     }
 
+    @Singleton
+    @Provides
+    fun getContributors(
+        gitNetworkDataSource: GitNetworkDataSource
+    ): GetContributors {
+        return GetContributors(
+            gitNetworkDataSource
+        )
+    }
 }
